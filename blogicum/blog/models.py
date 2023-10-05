@@ -1,10 +1,13 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+
+from django.db import models
 
 User = get_user_model()
 
+NUMBER_OF_CHARACTERS_DISPLAYED = 25
 
-class HelpInfo(models.Model):
+
+class PublishedAndCreated(models.Model):
     is_published = models.BooleanField(
         default=True,
         verbose_name='Опубликовано',
@@ -20,22 +23,27 @@ class HelpInfo(models.Model):
         abstract = True
 
 
-class Location(HelpInfo):
+class Location(PublishedAndCreated):
     name = models.CharField('Название места', max_length=256)
 
     class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
+    def __str__(self):
+        return self.name[:NUMBER_OF_CHARACTERS_DISPLAYED]
 
-class Category(HelpInfo):
+
+class Category(PublishedAndCreated):
     title = models.CharField(max_length=256, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Описание')
     slug = models.SlugField(
         unique=True,
         verbose_name='Идентификатор',
-        help_text='Идентификатор страницы для URL;'
-                  ' разрешены символы латиницы, цифры, дефис и подчёркивание.'
+        help_text=(
+            'Идентификатор страницы для URL;'
+            ' разрешены символы латиницы, цифры, дефис и подчёркивание.'
+        )
     )
 
     class Meta:
@@ -43,10 +51,10 @@ class Category(HelpInfo):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.title
+        return self.title[:NUMBER_OF_CHARACTERS_DISPLAYED]
 
 
-class Post(HelpInfo):
+class Post(PublishedAndCreated):
     title = models.CharField(max_length=256, verbose_name='Заголовок')
     text = models.TextField(verbose_name='Текст')
     pub_date = models.DateTimeField(
@@ -57,22 +65,29 @@ class Post(HelpInfo):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Автор публикации'
+        verbose_name='Автор публикации',
+        related_name='author'
     )
     location = models.ForeignKey(
         Location,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name='Местоположение'
+        verbose_name='Местоположение',
+        blank=False
 
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name='Категория'
+        verbose_name='Категория',
     )
 
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
+        default_related_name = ''
+        ordering = ["-pub_date"]
+
+    def __str__(self):
+        return self.title[:NUMBER_OF_CHARACTERS_DISPLAYED]
