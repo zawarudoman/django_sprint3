@@ -1,6 +1,7 @@
-from django.shortcuts import get_object_or_404, get_list_or_404, render
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.http import Http404
+
 from .models import Post, Category
 
 NUMBER_OF_POSTS_VISIBLE = 5

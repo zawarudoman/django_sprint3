@@ -14,7 +14,6 @@ class PersonAdmin(admin.ModelAdmin):
     list_filter = 'is_published'
 
 
-
 admin.site.register(Category)
 admin.site.register(Location)
 admin.site.register(Post)
