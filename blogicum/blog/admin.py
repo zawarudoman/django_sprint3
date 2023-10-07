@@ -29,6 +29,6 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = ('is_published', 'created_at')
 
 
-admin.site.register(Category,CategoryAdmin)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Post, PostAdmin)
